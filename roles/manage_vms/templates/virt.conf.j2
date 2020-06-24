@@ -1,0 +1,33 @@
+[DEFAULT]
+tmpfs         = -
+
+user          = {{ generic_user.username }}
+group         = {{ generic_user.group }}
+name          = {{ generic_user.description }}
+pass          = {{ generic_user.pwd }}
+ssh-user-key  = {{ generic_user.ssh_pub_key }}
+
+[ubuntu]
+suite           = xenial
+flavour         = virtual
+components      = main, universe, restricted
+mirror          = http://archive.ubuntu.com/ubuntu
+security-mirror = http://security.ubuntu.com/ubuntu
+
+; Need linux-image-generic for workaround for /proc/cpuinfo
+; https://bugs.launchpad.net/ubuntu/+source/vm-builder/+bug/1037607
+addpkg        = unattended-upgrades, openssh-server, acpid, linux-image-generic, bash-completion, man, vim, nano, htop, tmux, build-essential
+
+[kvm]
+libvirt       = qemu:///system
+arch          = amd64
+cpus          = {{ vm_cfg.vcpus }}
+
+; br0 is the system bridge manually created.  virbr0 is the virtual network bridge created via virt-manager
+bridge        = br0
+virtio_net    = true
+timezone      = {{ timezone }}
+
+# -memory 512
+# -smp cpus=1
+# -enable-kvm

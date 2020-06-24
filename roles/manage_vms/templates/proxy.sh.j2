@@ -1,0 +1,6 @@
+{% if outer_item.value.network.do_proxy is defined and outer_item.value.network.do_proxy == true %}
+export http_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+export https_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+export npm_config_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+export npm_config_https_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+{% endif %}

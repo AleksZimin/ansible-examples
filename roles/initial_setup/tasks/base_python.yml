@@ -1,0 +1,8 @@
+---
+- name: Install python-minimal for Ansible
+  raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy {{ base_python_packages }})"
+  register: output
+  changed_when:
+  - output.stdout != ""
+  - output.stdout != "\r\n"
+  tags: base_python

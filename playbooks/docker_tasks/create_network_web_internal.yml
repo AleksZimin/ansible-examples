@@ -1,0 +1,11 @@
+---
+- name: Create a web_internal network
+  hosts: docker-hosts
+  gather_facts: false
+
+  tasks:
+  - name: Create a web_internal network
+    docker_network:
+      name: web_internal
+    become: true
+   

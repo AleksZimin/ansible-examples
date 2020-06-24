@@ -1,0 +1,11 @@
+---
+  - block:
+    - name: "Start VM {{ outer_item.key }}"
+      virt: 
+        name: "{{ outer_item.key }}"
+        state: running
+
+
+    #when: 
+      #- outer_item.key in all_vms.list_vms
+    tags: vm_start

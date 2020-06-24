@@ -1,0 +1,14 @@
+---
+- name: list all existing VMs
+  virt:
+    command: list_vms
+  register: all_vms
+
+- name: list only running VMs
+  virt:
+    command: list_vms
+    state: running
+  register: running_vms
+
+- debug:
+    msg: "ALL VMS: {{all_vms.list_vms}}; RUNNING VMS: {{running_vms.list_vms}}"

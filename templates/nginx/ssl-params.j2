@@ -1,0 +1,11 @@
+ssl_protocols                 TLSv1.2 TLSv1.3;
+ssl_ciphers                   HIGH:!aNULL:!MD5;
+ssl_prefer_server_ciphers     on;
+ssl_certificate               /root/ssl/{{ nginx_ssl_cert }};
+ssl_certificate_key           /root/ssl/{{ nginx_ssl_key }};
+ssl_dhparam                   /root/ssl/{{ nginx_dhparam }};
+#ssl_stapling                 on;
+#ssl_stapling_verify          on;
+
+ssl_session_cache             shared:SSL:10m;
+ssl_session_timeout           10m;

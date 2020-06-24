@@ -1,0 +1,4 @@
+---
+# defaults file for manage_vms
+env: local
+os_version: '16.04.5'

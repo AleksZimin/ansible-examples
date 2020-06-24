@@ -1,0 +1,5 @@
+docker_users: ['MY_DOCKER_USER']
+docker_compose_version: '1.23.2'
+docker_compose_path: '/usr/bin/docker-compose'
+docker_files: '/opt/docker'
+docker_data: '/srv/docker'

@@ -1,0 +1,12 @@
+
+{% if outer_item.value.network.dns is defined %}
+
+
+{% for s in outer_item.value.network.dns %}
+{% if s is defined %}
+       nameserver {{ s }}   
+{% endif %}
+{% endfor %}
+
+
+{% endif %}

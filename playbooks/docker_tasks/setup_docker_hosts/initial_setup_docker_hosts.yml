@@ -1,0 +1,69 @@
+---
+- name: Install docker on hosts
+  hosts: docker-hosts
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Install list of requed packages
+    apt:
+      name: ['apt-transport-https','ca-certificates','curl','software-properties-common', 'python-pip']
+      state: present
+      update_cache: yes
+
+  - name: Add Docker GPG key
+    apt_key: 
+      url: https://download.docker.com/linux/ubuntu/gpg
+      id: 0EBFCD88
+      state: present
+
+  - name: Add Docker APT repository
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+
+  - name: Install docker
+    apt:
+      name: ['docker-ce']
+      state: present
+      update_cache: yes 
+
+  - name: Install pip docker
+    pip: 
+      name: ['docker']
+      state: present 
+
+  - name: Ensure docker users are added to the docker group.
+    user:
+      name: "{{ item }}"
+      groups: docker
+      append: true
+    with_items: "{{ docker_users }}"
+    notify: Restart docker
+
+  - name: Check current docker-compose version.
+    command: docker-compose --version
+    register: docker_compose_current_version
+    changed_when: false
+    failed_when: false
+    tags: docker-compose
+
+  - name: Delete existing docker-compose version if it's different.
+    file:
+      path: "{{ docker_compose_path }}"
+      state: absent
+    when: >
+      docker_compose_current_version.stdout is defined
+      and docker_compose_version not in docker_compose_current_version.stdout
+    tags: docker-compose
+
+  - name: Install Docker Compose (if configured).
+    get_url:
+      url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+      dest: "{{ docker_compose_path }}"
+      mode: 0755
+    tags: docker-compose
+
+
+  handlers:
+  - name: Restart docker
+    systemd: name=docker state=restarted

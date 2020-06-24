@@ -1,0 +1,28 @@
+--- 
+
+
+- name: Installer Args
+  set_fact: 
+    installer_args:
+      - --connect qemu:///system
+      - --os-variant {{ version_cfg.variant }}
+      - --import
+      - --name {{ outer_item.key }}
+      - --memory {{ outer_item.value.memory }}
+      - --disk path={{ img_file }},format=qcow2
+      - --accelerate
+      - --vcpus {{ outer_item.value.vcpus }}
+      - --hvm
+      - --graphics vnc,port={{ outer_item.value.graphics.vnc.port }}
+      - --noautoconsole
+      - --network {{ networkInfo }}
+      - --autostart
+
+
+- debug:
+    msg: "TEST= {{ installer_args | join(' ') }}; "
+
+
+ #- debug:
+  #    msg: "NAME={{ item.key }}; SECOND={{ item.value.graphics }}; "
+  #  with_dict: "{{ vms }}"

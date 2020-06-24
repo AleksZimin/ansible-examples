@@ -1,0 +1,15 @@
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+{% if outer_item.value.network is defined and outer_item.value.network.dhcp is defined and outer_item.value.network.dhcp == true %}
+auto {{ iface_name }}
+iface {{ iface_name }} inet dhcp
+{% else %}
+auto {{ iface_name }}
+iface {{ iface_name }} inet static
+    address {{ outer_item.value.network.ip }}
+    netmask {{ outer_item.value.network.netmask }}
+    gateway {{ outer_item.value.network.gateway }}
+{% endif %}

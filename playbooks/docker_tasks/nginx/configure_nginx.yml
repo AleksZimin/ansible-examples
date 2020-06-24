@@ -1,0 +1,33 @@
+---
+- name: Configure nginx
+  hosts: docker-hosts
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Create folder for docker files
+    file:
+      path: "{{ item }}"
+      state: directory
+      group: docker
+      mode: 0775
+    with_items: 
+    - ["{{ docker_data }}/nginx/","{{ docker_data }}/nginx/conf.d/","{{ docker_data }}/nginx/ssl","{{ docker_data }}/nginx/logs"]
+
+  - name: Add config for nginx
+    template:
+      src: ../../../templates/nginx/nginx.j2
+      dest: "{{ docker_data }}/nginx/nginx.conf"
+      group: docker
+
+  - name: Add https snippet for nginx
+    template:
+      src: ../../../templates/nginx/ssl-params.j2
+      dest: "{{ docker_data }}/nginx/conf.d/ssl-params"
+      group: docker
+
+  - name: Add default.conf for nginx reverse proxy
+    template:
+      src: ../../../templates/nginx/default.conf.j2
+      dest: "{{ docker_data }}/nginx/conf.d/default.conf"
+      group: docker

@@ -1,0 +1,35 @@
+---
+- name: "Local Config Files for VM {{ outer_item.key }}"
+  set_fact:
+    config_files_local: 
+      - { src: ../templates/environment.j2, dest: "{{ tmp_prefix }}environment" }
+      - { src: ../templates/interfaces.j2, dest: "{{ tmp_prefix }}interfaces" }
+      - { src: ../templates/apt_proxy.j2, dest: "{{ tmp_prefix }}apt_proxy" }
+      - { src: ../templates/proxy.sh.j2, dest: "{{ tmp_prefix }}proxy.sh" }
+      - { src: ../templates/netplan.yml.j2, dest: "{{ tmp_prefix }}netplan.yml" }
+      - { src: ../templates/dns_data.j2, dest: "{{ tmp_prefix }}dns_data.yml" }
+
+- name: "Build local configuration files for VM {{ outer_item.key }}"
+  template: 
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}"
+  connection: local
+  with_items: "{{ config_files_local }}"
+
+- name: "Read local config files of VM {{ outer_item.key }} into variables"
+  set_fact: 
+    environment_data: "{{ lookup('file', '{{ tmp_prefix }}environment') }}"
+    interfaces_data: "{{ lookup('file', '{{ tmp_prefix }}interfaces') }}"
+    apt_proxy_data: "{{ lookup('file', '{{ tmp_prefix }}apt_proxy') }}"
+    proxy_sh_data: "{{ lookup('file', '{{ tmp_prefix }}proxy.sh') }}"
+    netplan_yml_data: "{{ lookup('file', '{{ tmp_prefix }}netplan.yml') }}"
+    dns_data: "{{ lookup('file', '{{ tmp_prefix }}dns_data.yml') }}"
+
+
+# - debug:
+#     msg: "ENVIRONMENT_DATA: {{environment_data}};     
+#     INTERFACES_DATA:{{ interfaces_data }}; 
+#     APT_PROXY_DATA:{{ apt_proxy_data }}; 
+#     PROXY_SH_DATA:{{ proxy_sh_data }}; 
+#     NETPLAN_YML_DATA:{{ netplan_yml_data }};
+#     DNS_DATA: {{ dns_data }}"

@@ -1,0 +1,10 @@
+
+- name: "Copy image for VM {{ outer_item.key }}"
+  copy: 
+    src: "{{ outer_item.value.storage.primary.gold_image_source }}" 
+    dest: "{{ img_file }}"
+    backup: "{{ enable_backup | default('no') }}"
+    force: "{{ force_flag | default('no') }}" 
+    remote_src: yes
+  become: true
+  

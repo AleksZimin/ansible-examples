@@ -1,0 +1,10 @@
+{% if outer_item.value.network.do_proxy is defined and outer_item.value.network.do_proxy == true %}
+http_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+https_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+ftp_proxy=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
+HTTP_PROXY=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+HTTPS_PROXY=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+FTP_PROXY=http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/
+NO_PROXY="localhost,127.0.0.1,localaddress,.localdomain.com"
+{% endif %}

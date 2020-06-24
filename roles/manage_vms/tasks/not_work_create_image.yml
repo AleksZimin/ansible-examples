@@ -1,0 +1,51 @@
+
+- name: Build the first boot script
+  set_fact:
+    config_files: 
+      - { src: ../templates/first_boot.sh.j2, dest: /tmp/first_boot.sh }
+
+- name: "Save configuration files for VM {{ outer_item.key }}"
+  template: 
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}"
+  with_items: "{{ config_files }}"
+  become: true
+
+# - name: Ensure image_folder  directory exists
+#   file: 
+#     path: "{{ outer_item.value.storage.primary.image_folder }}" 
+#     state: directory 
+#     mode: "0770" 
+#     owner: "{{ libvirt_user }}" 
+#     group: "{{ libvirt_group }}"
+#   become: true
+
+
+- name: "Builder Args for VM {{ outer_item.key }}"
+  set_fact: 
+    builder_args: 
+      - '{{ version_cfg.os_version }}'
+      - --output {{ img_file }}
+      - --size {{ outer_item.value.storage.primary.size }}
+      - --format qcow2
+      - --hostname {{ outer_item.value.hostname }}
+      - --timezone {{ outer_item.value.timezone }}
+      # - --install rsync
+      - --firstboot-command 'dpkg-reconfigure openssh-server'
+      - --firstboot /tmp/first_boot.sh
+
+- name: Test to see if {{ img_file }} exists
+  stat: 
+    path: "{{ img_file }}"
+    get_attributes: false
+    get_checksum: false
+  register: stat_result
+  become: true
+
+# - name: "Create the image file for VM {{ outer_item.key }} using virt-builder"
+#   shell: virt-builder {{ builder_args | join(' ') }}
+#   become: true
+#   when: stat_result.stat.exists == false
+
+- debug:
+    msg: "BUILDER_ARGS= {{ builder_args | join(' ') }}; "

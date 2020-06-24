@@ -1,0 +1,49 @@
+server {
+    listen       {{ redmine_port }} ssl http2;
+    server_name  {{ redmine_hostname }};
+    
+    access_log   /var/log/nginx/redmine.access.log;
+    error_log    /var/log/nginx/redmine.error.log debug;
+
+    # SSL conf
+    include /etc/nginx/conf.d/ssl-params;
+    
+    location / {
+            proxy_pass http://{{ redmine_container_name }}:80/;
+            proxy_redirect off;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Protocol $scheme;
+            proxy_set_header X-Url-Scheme $scheme;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+}
+
+server {
+    listen       {{ gitlab_port }} ssl http2;
+    server_name  {{ gitlab_hostname }};
+    
+    
+    access_log   /var/log/nginx/gitlab.access.log;
+    error_log    /var/log/nginx/gitlab.error.log debug;
+
+    # SSL conf
+    include /etc/nginx/conf.d/ssl-params;
+    
+    location / {
+            proxy_pass http://{{ gitlab_container_name }}:{{ gitlab_port }}/;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+}

@@ -1,0 +1,82 @@
+---
+- name: Pull docker image for postgresql and run container with it
+  hosts: docker-hosts
+  gather_facts: false
+  become: yes
+  vars_files:
+  - "./credentials.yml"
+  tasks:
+
+  # - name: Create folder for docker files
+  #   become: true
+  #   file:
+  #     path: '{{ docker_files }}/postgresql/'
+  #     state: directory
+  #     group: docker
+  #     mode: 0775
+  #     recurse: yes
+
+  # - name: Download the latest docker file for postgresql
+  #   get_url:
+  #     url: https://raw.githubusercontent.com/docker-library/postgres/master/11/Dockerfile
+  #     dest: '{{ docker_files }}/postgresql/Dockerfile'
+  #     group: docker
+  #     mode: 0664
+
+    # - name: pull an image
+    #   docker_image:
+    #     name: postgres
+    
+    # - name: Create folder for postgres data
+    #   file:
+    #     path: {{ docker_files }}/postgresql/data
+    #     state: directory
+    #     group: docker
+    #     mode: 0755
+    #     recurse: yes
+
+    # - name: "Copy configuration for postgres. (Security harding)" # Не нужно, т.к парольный метод аутнтификации (md5) включается при передаче пароля в переменных окружения
+    #   template: 
+    #     src: "../../../templates/postgres/pg_hba.conf_11.j2" 
+    #     dest: "{{ docker_files }}/postgresql/data"
+    #   become: yes
+
+    - name: Start container with postgres image
+      docker_container: 
+        name: postgres
+        image: postgres:11-alpine
+        restart_policy: always
+        state: started
+        published_ports: 
+          - '0.0.0.0:59327:5432'
+        volumes: 
+          - "/srv/docker/postgresql/data:/var/lib/postgresql/data"
+        shm_size: 256MB
+        env:
+          POSTGRES_PASSWORD: "{{ postgres_pass }}"
+      when: container_delete is not defined
+            and other_image is not defined
+
+    - name: Delete container with postgres image
+      docker_container: 
+        name: postgres
+        state: absent
+        keep_volumes: no
+      notify: 
+        - Delete postgres image
+        - Delete postgres data
+      when: container_delete is defined
+  
+
+  handlers: 
+  - name: Delete postgres image
+    docker_image:
+      name: postgres
+      state: absent
+
+  - name: Delete postgres data
+    become: true
+    file:
+      path: '{{ docker_files }}/postgresql/'
+      state: absent
+    when: data_delete is defined

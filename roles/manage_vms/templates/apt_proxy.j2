@@ -1,0 +1,5 @@
+{% if outer_item.value.network.do_proxy is defined and outer_item.value.network.do_proxy == true %}
+Acquire::http::proxy "http://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/";
+Acquire::ftp::proxy "ftp://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/";
+Acquire::https::proxy "https://{{ outer_item.value.network.proxy.addr }}:{{ outer_item.value.network.proxy.port }}/";
+{% endif %}

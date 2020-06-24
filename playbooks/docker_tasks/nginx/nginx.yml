@@ -1,0 +1,13 @@
+server_hostname: localhost
+
+nginx_ssl_cert: my_sert.pem
+nginx_ssl_key: my_priv_key.pem
+nginx_dhparam: dhparam.pem
+
+redmine_port: 58325
+redmine_hostname: localhost
+redmine_container_name: redmine
+
+gitlab_port: 58326
+gitlab_hostname: localhost
+gitlab_container_name: gitlab

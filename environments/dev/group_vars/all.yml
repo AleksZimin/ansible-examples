@@ -1,0 +1,2 @@
+env: dev
+base_python_packages: python-minimal

@@ -1,0 +1,37 @@
+---
+# vars file for manage_vms
+
+vm_exists:        false
+vm_started:       false
+
+do_folder_rename: false
+do_change:        true
+
+libvirt_user:         libvirt-qemu
+libvirt_group:        kvm
+
+iso_path:             "/var/lib/libvirt/boot/"
+configs_path:         "/var/lib/libvirt/configs/"
+part_file:            "/var/lib/libvirt/configs/vmbuilder.partitions"
+
+imageFileNames:
+  18.04.1:      "ubuntu-18.04.1-live-server-amd64.iso"
+  16.04.5:      "ubuntu-16.04.5-server-amd64.iso"
+  14.04.5:      "ubuntu-14.04.5-server-amd64.iso"
+
+versionConfigs: 
+  18.04.1:
+    isoName:  ubuntu-18.04.1-live-server-amd64.iso
+    url:      http://releases.ubuntu.com/18.04.1/ubuntu-18.04.1-live-server-amd64.iso
+    os_version:  ubuntu-18.04
+    variant:  ubuntu18.04
+  16.04.5:      
+    isoName:  "ubuntu-16.04.5-server-amd64.iso"
+    url:      http://releases.ubuntu.com/16.04.5/ubuntu-16.04.5-server-amd64.iso
+    os_version:  ubuntu-16.04
+    variant:  ubuntu16.04
+  14.04.5:
+    isoName:  "ubuntu-14.04.5-server-amd64.iso"
+    url:      http://releases.ubuntu.com/14.04.5/ubuntu-14.04.5-server-amd64.iso
+    os_version:  ubuntu-14.04
+    variant:  ubuntu14.04

@@ -1,0 +1,3 @@
+---
+#- import_playbook: hypervisors_manage.yml
+- import_playbook: vms_manage.yml

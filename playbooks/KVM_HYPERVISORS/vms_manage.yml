@@ -1,0 +1,20 @@
+- name: Manage VMs on KVM hypervisors
+  hosts: KVM_HYPERVISORS
+  gather_facts: False
+  #become: true
+  vars_files:
+  - "{{ inventory_dir }}/credentials.yml"
+
+  tasks:
+    - name: List running VMs
+      import_role:
+          name: manage_vms
+          tasks_from: list_vms.yml 
+
+
+    - name: Loop for manage_vms role
+      include_role:
+        name: manage_vms
+      with_dict: "{{ vms }}"
+      loop_control:
+        loop_var: outer_item

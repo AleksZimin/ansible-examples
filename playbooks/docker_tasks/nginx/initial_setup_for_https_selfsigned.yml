@@ -1,0 +1,33 @@
+---
+- name: Initial setup for https and create selfsigned crt
+  hosts: docker-hosts
+  become: true
+  gather_facts: false
+
+  tasks:  
+  - name: Ensure python OpenSSL dependencies are installed.
+    pip:
+      name: pyOpenSSL
+      state: present
+
+  - name: Create a Larger Diffie-Hellman Prime (4096 bit)
+    openssl_dhparam:
+      path:  "{{ docker_data }}/nginx/ssl/{{ nginx_dhparam }}"
+      size: 4096
+
+  - name: Generate an OpenSSL private key.
+    openssl_privatekey:
+      path: "{{ docker_data }}/nginx/ssl/{{ nginx_ssl_key }}"
+
+  - name: Generate an OpenSSL CSR.
+    openssl_csr:
+      path: "{{ docker_data }}/nginx/ssl/{{ server_hostname }}.csr"
+      privatekey_path: "{{ docker_data }}/nginx/ssl/{{ nginx_ssl_key }}"
+      common_name: "{{ server_hostname }}"
+
+  - name: Generate a Self Signed OpenSSL certificate.
+    openssl_certificate:
+      path: "{{ docker_data }}/nginx/ssl/{{ nginx_ssl_cert }}"
+      privatekey_path: "{{ docker_data }}/nginx/ssl/{{ nginx_ssl_key }}"
+      csr_path: "{{ docker_data }}/nginx/ssl/{{ server_hostname }}.csr"
+      provider: selfsigned

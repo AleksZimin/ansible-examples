@@ -1,0 +1,6 @@
+*.cfg
+inventory.yml
+KVM_HYPERVISORS.yml
+docker-hosts.yml
+app-tests.yml
+*.retry

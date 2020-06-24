@@ -1,0 +1,31 @@
+Host bastion
+  Hostname <bastion_ip>
+  Port <bastion_port>
+  ForwardAgent yes
+  IdentityFile ~/.ssh/<private_ssh_key>
+  ControlPath ~/.ssh/cm-%r@%h:%p
+  ControlMaster auto
+  ControlPersist 10m
+
+Host HOST-I
+  Hostname <HOST-I_ip>
+  Port <HOST-I_port>
+  ForwardAgent yes
+  IdentityFile ~/.ssh/<private_ssh_key>
+  ControlPath ~/.ssh/cm-%r@%h:%p
+  ControlMaster auto
+  ControlPersist 10m
+
+Host INFRA-I
+  User <MY_USERNAME>
+  HostName <INFRA-I_ip>
+  ForwardAgent yes
+  ProxyCommand ssh -W %h:%p <MY_USERNAME>@bastion
+  IdentityFile ~/.ssh/<private_ssh_key>
+
+Host TEST-I
+  User <MY_USERNAME>
+  HostName <TEST-I_ip>
+  ForwardAgent yes
+  ProxyCommand ssh -W %h:%p <MY_USERNAME>@bastion
+  IdentityFile ~/.ssh/<private_ssh_key>

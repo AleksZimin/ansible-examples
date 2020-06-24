@@ -1,0 +1,9 @@
+---
+- name: Create and configure nginx docker container
+  hosts: docker-hosts
+  gather_facts: false
+- import_playbook: ../setup_docker_hosts/main.yml
+- import_playbook: ../create_network_web_internal.yml
+- import_playbook: configure_nginx.yml
+- import_playbook: initial_setup_for_https_selfsigned.yml
+- import_playbook: docker_container_nginx_mainline_alpine.yml

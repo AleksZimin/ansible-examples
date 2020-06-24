@@ -1,0 +1,16 @@
+infra-docker-hosts:
+  vars:
+    docker_users: ['*******']
+    docker_compose_version: '1.23.2'
+    docker_compose_path: '/usr/bin/docker-compose'
+    docker_files: '/opt/docker'
+  hosts:
+    INFRA-I:
+      ansible_host: INFRA-I
+    TEST-I:
+      ansible_host: TEST-I
+
+app-tests:
+  hosts:
+    TEST-I:
+      ansible_host: TEST-I

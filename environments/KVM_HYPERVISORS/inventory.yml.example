@@ -1,0 +1,4 @@
+KVM_HYPERVISORS:
+  hosts:
+    HOST-I:
+      ansible_host: HOST-I

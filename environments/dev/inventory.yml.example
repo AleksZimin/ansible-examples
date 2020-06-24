@@ -1,0 +1,13 @@
+docker-hosts:
+  hosts:
+    #tag for docker-host1(обычно совпадает в dns именем)
+    DOCKER_HOST1:
+      # docker-host1 ip or dnsname
+      ansible_host: DOCKER_HOST1
+
+app-tests:
+  hosts:
+    # tag for app-tests1(обычно совпадает в dns именем>
+    APP_TEST1:
+      # app-tests1 ip or dnsname
+      ansible_host: APP_TEST1

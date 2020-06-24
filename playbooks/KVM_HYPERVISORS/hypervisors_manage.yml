@@ -1,0 +1,24 @@
+- name: Manage KVM hypervisors
+  hosts: KVM_HYPERVISORS
+  gather_facts: False
+  #become: true
+  vars_files:
+  - "{{ inventory_dir }}/credentials.yml"
+
+  tasks:
+    - name: Install Packages
+      apt: 
+        name:
+          - qemu-kvm
+          - qemu
+          - virt-manager
+          - virt-viewer
+          - libvirt-bin
+          - uuid
+          - bridge-utils
+          - libosinfo-bin
+          - ubuntu-vm-builder
+          - libguestfs-tools
+        state: present
+      become: true
+      tags: install_hypervisor

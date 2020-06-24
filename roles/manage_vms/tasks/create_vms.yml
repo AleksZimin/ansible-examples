@@ -1,0 +1,32 @@
+---
+- name: Additional Network Info
+  set_fact: 
+    networkInfo: "{{ networkInfo }},mac={{ outer_item.value.network.mac }}"
+  when: outer_item.value.network is defined and outer_item.value.network.mac is defined and outer_item.value.network.mac != ''
+
+- name: Installer Args
+  set_fact: 
+    installer_args:
+      - --connect qemu:///system
+      - --os-variant {{ version_cfg.variant }}
+      - --import
+      - --name {{ outer_item.key }}
+      - --memory {{ outer_item.value.memory }}
+      - --disk path={{ img_file }},format=qcow2
+      - --accelerate
+      - --vcpus {{ outer_item.value.vcpus }}
+      - --hvm
+      - --graphics vnc,port={{ outer_item.value.graphics.vnc.port }}
+      - --noautoconsole
+      - --network {{ networkInfo }}
+      - --autostart
+
+
+
+- name: "Create the VM {{ outer_item.key }}"
+  shell: virt-install {{ installer_args | join(' ') }}
+  ignore_errors: yes
+
+#   become: true
+# - debug:
+#     msg: "INSTALLER_ARG= {{ installer_args | join(' ') }}; "

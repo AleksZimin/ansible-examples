@@ -1,0 +1,23 @@
+network:
+  version: 2
+  ethernets:
+    {{ iface_name }}:
+{% if outer_item.value.network is defined and outer_item.value.network.dhcp is defined and outer_item.value.network.dhcp == true %}
+      dhcp4: true
+{% else %}
+      dhcp4: false
+      addresses: [ "{{ outer_item.value.network.ip }}"/"{{ outer_item.value.network.mask }}" ]
+{% if outer_item.value.network is defined and outer_item.value.network.gateway is defined and outer_item.value.network.gateway != '' %}
+      gateway4: {{ outer_item.value.network.gateway }}
+{% endif %}
+{% if dns_servers is defined %}
+      nameservers:
+        addresses: 
+{% for s in dns_servers %}
+{% if s.network is defined %}
+          - {{ s.network.ip }} # {{ s.description }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endif %}

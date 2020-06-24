@@ -1,0 +1,44 @@
+---
+- name: Standard Facts
+  set_fact: 
+    version_cfg: "{{ versionConfigs[os_version] }}"
+    iface_name: ens3
+    img_file: "{{ outer_item.value.storage.primary.image_folder }}/{{ outer_item.value.storage.primary.name }}.qcow2"
+    tmp_prefix: "/tmp/{{ outer_item.key }}_"
+    networkInfo: bridge:br0,model=virtio
+
+- name: Variable Facts
+  set_fact:
+    force_flag: yes
+  when: "'force' in outer_item.value.flags"
+
+  
+- include: stop_vms.yml 
+  when: "'stop' in outer_item.value.flags or 
+         'restart' in outer_item.value.flags"
+
+- include: delete_vms.yml 
+  when: "'delete' in outer_item.value.flags or 
+         'recreate' in outer_item.value.flags"
+
+- block:
+  - include: load_config.yml
+  - include: copy_image.yml
+    #- include: create_image.yml
+  - include: create_vms.yml
+  when: "'create' in outer_item.value.flags or 
+         'recreate' in outer_item.value.flags"
+  tags:
+    - create_vms
+
+- include: start_vms.yml 
+  when: "'start' in outer_item.value.flags or 
+         'restart' in outer_item.value.flags"
+
+#- include: delete_vms.yml
+#- include: create_vms.yml
+#- include: test.yml
+
+
+# - debug:
+#     msg: "TEST= {{ version_cfg }}; "

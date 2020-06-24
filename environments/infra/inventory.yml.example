@@ -1,0 +1,4 @@
+docker-hosts:
+  hosts:
+    INFRA-I:
+      ansible_host: INFRA-I

@@ -1,0 +1,7 @@
+---
+- name: Configure docker hosts
+  hosts: docker-hosts
+  gather_facts: false
+- import_playbook: ../../general_tasks/initial_setup_managed_hosts.yml
+- import_playbook: ../../general_tasks/gather_facts.yml
+- import_playbook: initial_setup_docker_hosts.yml

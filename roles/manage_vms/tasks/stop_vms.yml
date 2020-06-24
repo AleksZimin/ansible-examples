@@ -1,0 +1,27 @@
+---
+  - block:
+    - name: "Shutdown VM {{ outer_item.key }}"
+      virt: 
+        name: "{{ outer_item.key }}"
+        state: shutdown
+
+    - name: "Wait for shutdown of VM {{ outer_item.key }}"
+      virt:
+        name: "{{ outer_item.key }}"
+        command: status
+      register: status_vm
+      until: status_vm.status == "shutdown"
+      retries: 5
+      delay: "{{ pause_in_loops }}"
+      ignore_errors: "{{ ignoring_errors }}"
+      when:
+        - "'force' not in outer_item.value.flags"
+
+    - name: "Destroy VM {{ outer_item.key }} (hard shutdown)"
+      virt: 
+        name: "{{ outer_item.key }}"
+        state: destroyed
+
+    when: 
+      - outer_item.key in running_vms.list_vms
+    tags: vm_stop

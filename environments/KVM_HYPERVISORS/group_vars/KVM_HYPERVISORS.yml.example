@@ -1,0 +1,69 @@
+# Сеть не работает, т.к. пока не реализовано изменение или создание образа VM.
+pause_in_loops: 5
+#postfix: "{{ lookup('pipe', 'date +%Y-%m-%d_%H-%M-%S') }}"
+postfix: ver-1.0
+ignoring_errors: yes
+enable_backup: yes    # Применяется при копировании образа ВМ (gold->vm image) и только при выставленном флаге 'force'. 
+
+vms:
+  MY_VM-I:
+    flags: ['start']
+    hostname: MY_VM-I
+    timezone: "Europe/Moscow"
+    storage:
+      primary:
+        size: 30G
+        type: xfs
+        name: "MY_VM-I-{{ postfix }}"
+        image_folder: /kvm/vhdd
+        gold_image_source: /backup/kvm/MY_VM-I_base.qcow2
+    vcpus: 2
+    memory: 4096
+    graphics:
+        vnc:
+          port: 5905
+    network:
+        do_proxy: false            # Enable proxy settings for the new VM. Ensure proxy config is included.
+        dchp: true                # Whether to use DHCP
+        # Required when not using DHCP
+        ip: 192.168.0.2           # IP Address to use
+        mask: 24                   # Network Mask Value
+        gateway: 192.168.0.1      # Network Gateway
+        netmask: 255.255.255.0      # Netmask
+        broadcast: 192.168.0.255    # Broadcast address
+        #mac: xxx.xxx.xxx.xxx      # MAC Address
+        dns: ['8.8.8.8','8.8.4.4']
+        #proxy:
+          #addr: "address.com"
+          #port: "3128"
+
+  MY_VM-II:
+    flags: ['create','start', 'force']
+    hostname: MY_VM-II
+    timezone: "Europe/Moscow"
+    storage:
+      primary:
+        size: 30G
+        type: xfs
+        name: "MY_VM-II-{{ postfix }}"
+        image_folder: /kvm/vhdd
+        gold_image_source: /backup/kvm/MY_VM-II_base.qcow2
+    vcpus: 1
+    memory: 2048
+    graphics:
+        vnc:
+          port: 5910
+    network:
+        do_proxy: false            # Enable proxy settings for the new VM. Ensure proxy config is included.
+        dchp: true                # Whether to use DHCP
+        # Required when not using DHCP
+        ip: 192.168.0.3           # IP Address to use
+        mask: 24                   # Network Mask Value
+        gateway: 192.168.0.1      # Network Gateway
+        netmask: 255.255.255.0      # Netmask
+        broadcast: 192.168.0.255    # Broadcast address
+        #mac: xxx.xxx.xxx.xxx      # MAC Address
+        dns: ['8.8.8.8','8.8.4.4']
+        #proxy:
+          #addr: "address.com"
+          #port: "3128"
